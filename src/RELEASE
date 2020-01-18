@@ -1,0 +1,131 @@
+#############################################################################
+#                                                                           #
+#                        PerLDAP Release Notes		                    #
+#                                                                           #
+#############################################################################
+
+VERSION 1.5.3 - Aug 2010
+========================
+This is an update release with the following goals:
+
+   - Allow PerLDAP to use the OpenLDAP client libraries behind the
+     scenes.
+   - Avoid using deprecated functions in the underlying LDAP client
+     library.
+
+VERSION 1.5.2 - Jul 2007
+========================
+
+Fixes https://bugzilla.mozilla.org/show_bug.cgi?id=389731
+PerLDAP crashes when a bad URL is passed
+
+VERSION 1.5.1 - May 2007
+========================
+This version is the officially tri-licensed version.  All code
+is licensed under the MPL/GPL/LGPL tri-license, as all of the
+other Mozilla components.  All code was either granted permission
+by the copyright holder, or was rewritten in a clean-room
+implementation.
+
+VERSION 1.5 - Feb 2006
+======================
+
+This is an update release, with a few goals:
+
+   - Support for latest Mozilla and Sun C-SDK (v5.x)
+   - Now defaults to LDAP v3 protocol, but you can downgrade to v2 easily
+   - Fully support Perl 5.005 and later
+   - Added "hash" style prototypes to all class methods that takes more
+     than one argument
+
+Many, many thanks to Rich Megginson for taking charge of the (broken) build
+and configuration process.
+
+
+New functionality
+-----------------
+
+Conn.pm:
+	* setVersion() - Set the LDAP protocol version
+	* getVersion() - Get the current LDAP protocol in use
+	* installNSPR() - Make the connection use NSPR I/O etc.
+	* setNSPRTimeout() - Set the connection timeout, in ms
+
+API.xs:
+	* Added support for prldap_install_routines().
+
+
+
+VERSION 1.4 - AUGUST 18, 1999
+=============================
+
+This is primarily a bug fix release, however there are 5 new methods
+introduced as well.  Brief descriptions follow in this document.  To get
+full examples and a larger summary, see the PerLDAP Programmer's Guide.
+
+
+New Methods Added
+-----------------
+
+Entry.pm:
+	* getValues() - returns the array of values.
+	* move() - move one attribute to another, and delete the original.
+	* copy() - copy one attribute to another.
+	
+Conn.pm:
+	* browse() - makes it easy to browse an entry.
+	* compare() - compare an attribute value against a DN/entry
+		    without having to do the search.	
+
+
+Bug Fixes and other changes
+---------------------------
+
+Entry.pm:
+	* addDNValue() - fixed wrong index for norm.
+	* matchValue() - fixed missing normalization in half of case statement. 
+	* setValue() - remove _delete_ flag if set, fix for saving state.
+	* STORE - fixed not ignoring the internal instance variables properly.
+	* Fixed numerous bugs for large attribute sets.
+	* Fixed bug 4368 ("exists vs. EXISTS").
+	* Fixed several loop bugs.
+	* Removed all _self_obj_  references, it's obsolete in this
+	  version.
+	* We support each() and keys() now on the Entry object, to loop
+	  through all attribute names (types).
+
+
+Conn.pm:
+	* close() - fixed memory leak.
+	* modifyRDN() - fixed problem where we weren't updating the
+			appropriate DN in the self object.
+	* Fixed bug 3342 (problems adding entries with binary data).
+	* getErrorCode()/getErrorString() - return LDAP_SUCCESS if no
+					    LDAP connection handle.
+	* add() - fixed code to handle hash array as docs indicate.
+	* update() - optimization for "replace" vs "add/delete", we try to
+		     use whatever LDAPMod is most efficient.
+
+LDIF.pm:
+
+	* Complete rewrite, by John Kristian <kristian@netscape.com>.
+
+API.xs:
+	* Fixed memory allocation problems, replacing all memory management
+	  routines. This solves all known issues with ActiveState Perl.
+	* More safety checks around calls to *_free().
+
+	
+Miscellaneous
+-------------
+
+	* Various other optimizations on tests and such.
+	* Fixed most (all?) known memory leaks.
+	* Fixed a lot of problems with Makefile.PL, adding some new targets
+	  (like "make html"). Add a skeleton to "make test".
+	* Fixed numerous small bugs, as reported to Mozilla.
+	* We produce less warnings now, and try to "use strict" when
+	  appropriate.
+	* We have a new versioning scheme, conforming to standard
+	  Perl. We'll change this again when Perl's new versioning system
+	  is in place (allowing versions like 1.2.3).
